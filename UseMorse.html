@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="UM.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UseMorse 👑 - Morse Code Converter ⚠️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        body {
+            background-color: #0e0e0e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('3.webp');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            border: 3px solid rgb(31, 255, 251);
+            border-radius: 15px;
+            padding: 20px;
+            background-color: #222;
+            box-shadow: 0 0 40px rgba(26, 255, 244, 0.5);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .converter-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid white;
+            background-color: black;
+            color: white;
+            resize: none;
+            font-size: 16px;
+        }
+
+        .switch {
+            margin: 10px;
+        }
+
+        #switchBtn, #refreshBtn {
+            font-size: 20px;
+            padding: 5px 10px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #switchBtn:hover, #refreshBtn:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .convert-btn {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .convert-btn:hover {
+            background-color: black;
+            color: white;
+            border: 1px solid white;
+        }
+
+        .copy-btn {
+            background-color: #ff6347;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background-color: #444;
+            color: white;
+        }
+
+        footer {
+            margin-top: 20px;
+            color: #aaa;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <h1> UseMorse - Morse Code Converter ⚡🖥️</h1>
+        
+        <div class="converter-box">
+            <textarea id="inputText" placeholder="Enter your message or morse code here..."></textarea>
+            <div class="switch">
+                <button id="switchBtn">Change 🔺</button>
+                <button id="refreshBtn">Refresh 🕹️</button>
+            </div>
+            <textarea id="outputText" placeholder="Converted result will appear here..." readonly></textarea>
+            <button class="copy-btn" id="copyBtn">Copy Result 📋</button>
+        </div>
+        
+        <button class="convert-btn" id="convertBtn"> Convert ✅ </button>
+        
+        <footer>
+            <p> 
+                <b>
+                  <a href="https://linktr.ee/manash.djmm" target="_blank" style="text-decoration: none; color: #aaa;">
+                    Developed with ❤️ by <span style="color: #ff6347;">Manash</span>
+                  </a>
+                </b> 
+                | UseMorse |
+              </p>
+        </footer>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const userReady = confirm("Are you ready to use Morse? 😈❗");
+            if (!userReady) {
+                window.location.href = "https://linktr.ee/manash.djmm"; 
+            }
+        };
+        const morseCode = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 
+            'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 
+            'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', 
+            '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/', '.': '.-.-.-', ',': '--..--', '?': '..--..', 
+            "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-', 
+            '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.'
+        };
+
+        const reverseMorseCode = Object.fromEntries(Object.entries(morseCode).map(([key, value]) => [value, key]));
+
+        let isToMorse = true;
+
+        document.getElementById('switchBtn').addEventListener('click', () => {
+            isToMorse = !isToMorse;
+            document.getElementById('inputText').placeholder = isToMorse ? 'Enter your message...' : 'Enter Morse code...';
+            document.getElementById('outputText').placeholder = isToMorse ? 'Morse code will appear here...' : 'Original text will appear here...';
+        });
+
+        document.getElementById('convertBtn').addEventListener('click', () => {
+            const input = document.getElementById('inputText').value.trim();
+            const output = isToMorse ? convertToMorse(input) : convertToText(input);
+            document.getElementById('outputText').value = output;
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const outputText = document.getElementById('outputText');
+            outputText.select();
+            document.execCommand('copy');
+            alert("Copied to clipboard! 📝");
+        });
+
+        function convertToMorse(text) {
+            return text.toUpperCase().split('').map(char => morseCode[char] || char).join(' ');
+        }
+
+        function convertToText(morse) {
+            return morse.split(' ').map(code => reverseMorseCode[code] || code).join('');
+        }
+    </script>
+</body>
+</html>
