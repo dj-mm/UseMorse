@@ -180,6 +180,7 @@
                 window.location.href = "https://linktr.ee/manash.djmm"; 
             }
         };
+
         const morseCode = {
             'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 
             'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 
@@ -193,6 +194,10 @@
 
         let isToMorse = true;
 
+        // Regex patterns
+        const textPattern = /^[A-Za-z0-9 .,?'/!&:;=+\-_"$@]*$/;
+        const morsePattern = /^[.\-\/\s]*$/;
+
         document.getElementById('switchBtn').addEventListener('click', () => {
             isToMorse = !isToMorse;
             document.getElementById('inputText').placeholder = isToMorse ? 'Enter your message...' : 'Enter Morse code...';
@@ -201,8 +206,22 @@
 
         document.getElementById('convertBtn').addEventListener('click', () => {
             const input = document.getElementById('inputText').value.trim();
-            const output = isToMorse ? convertToMorse(input) : convertToText(input);
-            document.getElementById('outputText').value = output;
+            
+            if (isToMorse) {
+                if (!textPattern.test(input)) {
+                    alert("Invalid input! Please enter valid characters (letters, numbers, and basic punctuation).");
+                    return;
+                }
+                const output = convertToMorse(input);
+                document.getElementById('outputText').value = output;
+            } else {
+                if (!morsePattern.test(input)) {
+                    alert("Invalid Morse code! Please use only dots, dashes, and slashes.");
+                    return;
+                }
+                const output = convertToText(input);
+                document.getElementById('outputText').value = output;
+            }
         });
 
         document.getElementById('refreshBtn').addEventListener('click', () => {
@@ -218,11 +237,11 @@
         });
 
         function convertToMorse(text) {
-            return text.toUpperCase().split('').map(char => morseCode[char] || char).join(' ');
+            return text.toUpperCase().split('').map(char => morseCode[char] || '').join(' ');
         }
 
         function convertToText(morse) {
-            return morse.split(' ').map(code => reverseMorseCode[code] || code).join('');
+            return morse.split(' ').map(code => reverseMorseCode[code] || '').join('');
         }
     </script>
 </body>
